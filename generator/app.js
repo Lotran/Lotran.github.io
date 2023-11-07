@@ -2,12 +2,15 @@ const mainEl = document.querySelector('.main');
 
 const passwordEl = document.createElement('input');
 passwordEl.classList.add('password');
-passwordEl.setAttribute('placeholder', 'Сгенерировать пароль');
+passwordEl.setAttribute('placeholder', 'Тут будет пароль');
 passwordEl.addEventListener('keypress', (e) => {
 	e.preventDefault();
 });
 
-const passwordLenght = 14;
+const PassLenght = document.createElement('input');
+PassLenght.classList.add('password');
+PassLenght.setAttribute('placeholder', 'Длина пароля');
+PassLenght.setAttribute('id', 'PassLenght');
 
 const copyButton = document.createElement('button');
 copyButton.classList.add('passwordbtn');
@@ -22,7 +25,8 @@ const generateButton = document.createElement('button');
 generateButton.classList.add('passwordbtn');
 generateButton.innerText = 'Сгенерировать';
 generateButton.addEventListener('click', (e) => {
-	let password = generatePassword(passwordLenght);
+	var inputVal = document.getElementById('PassLenght').value;
+	let password = generatePassword(inputVal);
 	passwordEl.value = password;
 });
 
@@ -41,6 +45,7 @@ function generatePassword(passwordLenght) {
 	return randomString;
 }
 
+mainEl.appendChild(PassLenght);
 mainEl.appendChild(passwordEl);
 mainEl.appendChild(generateButton);
 mainEl.appendChild(copyButton);
