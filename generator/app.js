@@ -51,5 +51,6 @@ function generatePassword(passwordLenght) {
 }
 
 mainEl.appendChild(passwordEl);
+mainEl.appendChild(passwordLenght);
 mainEl.appendChild(generateButton);
 mainEl.appendChild(copyButton);
