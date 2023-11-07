@@ -1,4 +1,7 @@
 const mainEl = document.querySelector('.main');
+// add settings
+// enter lenght password
+// checkbox Uppercase, lowerCase, Numbers, Symblos
 
 const passwordEl = document.createElement('input');
 passwordEl.classList.add('password');
@@ -19,11 +22,16 @@ copyButton.addEventListener('click', (e) => {
 	navigator.clipboard.writeText(passwordEl.value);
 });
 
+const passwordLenght = document.createElement('input');
+passwordEl.classList.add('password');
+passwordEl.setAttribute('placeholder', 'Длина пароля');
+});
+
 const generateButton = document.createElement('button');
 generateButton.classList.add('passwordbtn');
 generateButton.innerText = 'Сгенерировать';
 generateButton.addEventListener('click', (e) => {
-	let password = generatePassword(12);
+	let password = generatePassword('passwordLenght');
 	passwordEl.value = password;
 });
 
