@@ -1,0 +1,10 @@
+.element {
+	padding: 8px;
+	background-color: #336699;
+	border: none;
+	color: #f1f5f8;
+	cursor: pointer;
+	border-radius: 4px;
+	margin: 2px;
+	min-width: 200px;
+}
