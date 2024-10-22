@@ -31,10 +31,10 @@ generateButton.addEventListener('click', (e) => {
 });
 
 function generatePassword(passwordLenght) {
-	const numberChars = "0123456789";
-	const upperChars = "ABCDEFGHJKLMNPQRSTUVWXYZ";
+	const numberChars = "123456789";
+	const upperChars = "ABCDEFHJKLMNPRSTUVWXYZ";
 	const lowerChars = "abcdefhjkmnprstuvwxyz";
-	const symbolChars = "!@#$%^&()_+=";
+	const symbolChars = "!@#$%";
 	const allChars = numberChars + upperChars + lowerChars + symbolChars;
 	
 	let randomString = '';
