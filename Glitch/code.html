@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ACCESS_TERMINAL // INPUT_REQUIRED</title>
+  <style>
+    /* ===== БАЗОВЫЕ СТИЛИ ===== */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #050505; color: #0f0; font-family: 'Courier New', monospace;
+      min-height: 100vh; display: flex; flex-direction: column; align-items: center;
+      justify-content: center; padding: 20px; overflow-x: hidden; position: relative;
+    }
+    body::before {
+      content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: repeating-linear-gradient(0deg, rgba(0,255,0,0.02) 0px, rgba(0,255,0,0.02) 1px, transparent 1px, transparent 2px);
+      pointer-events: none; z-index: -1; animation: noise 0.15s infinite steps(1);
+    }
+    @keyframes noise { 0% { transform: translate(0,0); } 50% { transform: translate(-1px,1px); } 100% { transform: translate(1px,-1px); } }
+
+    .container { max-width: 650px; width: 100%; text-align: center; z-index: 1; }
+
+    /* ===== ЗАГОЛОВОК И ГЛИТЧ ===== */
+    .title { font-size: 1.4rem; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 25px; text-shadow: 0 0 8px rgba(0,255,0,0.6); }
+    .glitch { position: relative; animation: glitch 4s infinite; }
+    .glitch::before, .glitch::after { content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+    .glitch::before { color: #f00; animation: glitch-1 0.3s infinite linear alternate-reverse; clip-path: polygon(0 0, 100% 0, 100% 35%, 0 35%); opacity: 0.7; }
+    .glitch::after { color: #0ff; animation: glitch-2 0.3s infinite linear alternate-reverse; clip-path: polygon(0 65%, 100% 65%, 100% 100%, 0 100%); opacity: 0.7; }
+    @keyframes glitch { 0%,90%,100% { transform: translate(0); } 92% { transform: translate(-2px,1px); } 96% { transform: translate(1px,-1px); } }
+    @keyframes glitch-1 { 0% { clip-path: polygon(0 20%, 100% 20%, 100% 40%, 0 40%); transform: translate(-1px,0); } 100% { clip-path: polygon(0 10%, 100% 10%, 100% 30%, 0 30%); transform: translate(1px,0); } }
+    @keyframes glitch-2 { 0% { clip-path: polygon(0 60%, 100% 60%, 100% 80%, 0 80%); transform: translate(1px,0); } 100% { clip-path: polygon(0 70%, 100% 70%, 100% 90%, 0 90%); transform: translate(-1px,0); } }
+
+    /* ===== ТЕРМИНАЛ ===== */
+    .terminal {
+      background: rgba(0, 20, 0, 0.3); border: 1px solid #0f0; border-radius: 4px;
+      padding: 20px; text-align: left; margin-bottom: 25px; box-shadow: 0 0 15px rgba(0,255,0,0.1);
+      min-height: 120px; position: relative; overflow: hidden;
+    }
+    .terminal::after {
+      content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      background: linear-gradient(transparent 50%, rgba(0,255,0,0.02) 50%); background-size: 100% 4px; pointer-events: none;
+    }
+    .log-line { margin: 5px 0; font-size: 0.9rem; line-height: 1.4; opacity: 0; transform: translateX(-5px); transition: opacity 0.3s, transform 0.3s; }
+    .log-line.visible { opacity: 1; transform: translateX(0); }
+    .log-line .prompt { color: #0f0; } .log-line .data { color: #0ff; } .log-line .warn { color: #f00; }
+
+    /* ===== ПОЛЕ ВВОДА И КНОПКА ===== */
+    .input-wrapper { display: flex; gap: 10px; justify-content: center; margin-bottom: 20px; flex-wrap: wrap; }
+    #code-input {
+      background: rgba(0, 10, 0, 0.5); border: 2px solid #0f0; color: #0f0;
+      font-family: 'Courier New', monospace; font-size: 1.1rem; padding: 12px 15px;
+      width: 280px; max-width: 100%; outline: none; text-transform: uppercase; letter-spacing: 1px; transition: all 0.2s;
+    }
+    #code-input:focus { border-color: #0ff; box-shadow: 0 0 10px rgba(0,255,255,0.4); }
+    #code-input::placeholder { color: rgba(0, 255, 0, 0.4); text-transform: uppercase; }
+
+    .btn {
+      background: transparent; border: 2px solid #0f0; color: #0f0;
+      font-family: 'Courier New', monospace; font-size: 1rem; text-transform: uppercase;
+      letter-spacing: 2px; cursor: pointer; padding: 12px 20px; transition: all 0.2s; position: relative; overflow: hidden;
+    }
+    .btn:hover { background: rgba(0,255,0,0.1); box-shadow: 0 0 15px rgba(0,255,0,0.5); transform: translateY(-2px); }
+    .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
+
+    /* ===== ПОДСКАЗКА ===== */
+    .hint-block { margin-top: 15px; }
+    .hint-btn { border-color: #0ff; color: #0ff; font-size: 0.9rem; margin-bottom: 8px; }
+    .hint-btn:hover { background: rgba(0,255,255,0.1); box-shadow: 0 0 15px rgba(0,255,255,0.5); }
+    .hint-content {
+      max-height: 0; overflow: hidden; transition: max-height 0.3s ease, padding 0.3s ease;
+      padding: 0 10px; border: 1px dashed #0ff; background: rgba(0, 255, 255, 0.03);
+      font-size: 0.95rem; color: #0ff;
+    }
+    .hint-content.show { max-height: 60px; padding: 10px; }
+
+    /* ===== СТАТУС И АНИМАЦИИ ===== */
+    .status-msg { margin-top: 20px; min-height: 20px; font-size: 1rem; text-transform: uppercase; letter-spacing: 1px; transition: all 0.3s; }
+    .status-msg.error { color: #f00; text-shadow: 0 0 8px rgba(255,0,0,0.6); animation: shake 0.4s; }
+    .status-msg.success { color: #0f0; text-shadow: 0 0 10px rgba(0,255,0,0.8); }
+
+    @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+
+    .screen-glitch { animation: screenGlitch 0.3s linear; }
+    @keyframes screenGlitch {
+      0% { filter: none; transform: none; }
+      20% { filter: invert(1) hue-rotate(180deg); transform: skewX(-8deg); }
+      40% { filter: contrast(3) brightness(1.5); transform: skewX(12deg); }
+      60% { filter: invert(0) hue-rotate(0deg); transform: skewX(-4deg); }
+      80% { filter: contrast(1) brightness(1); transform: skewX(4deg); }
+      100% { filter: none; transform: none; }
+    }
+
+    @media (max-width: 600px) {
+      .title { font-size: 1.1rem; }
+      .input-wrapper { flex-direction: column; align-items: center; }
+      #code-input { width: 100%; }
+      .btn { width: 100%; max-width: 280px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 class="title glitch" data-text="ТРЕБУЕТСЯ АВТОРИЗАЦИЯ">ТРЕБУЕТСЯ АВТОРИЗАЦИЯ</h1>
+    
+    <div class="terminal" id="terminal-log"></div>
+
+    <div class="input-wrapper">
+      <input type="text" id="code-input" placeholder="ВВЕДИТЕ КЛЮЧ ДОСТУПА" autocomplete="off" maxlength="20">
+      <button id="submit-btn" class="btn">ПРОВЕРИТЬ</button>
+    </div>
+
+    <div class="hint-block">
+      <button id="hint-btn" class="btn hint-btn">? ПОДСКАЗКА</button>
+      <div id="hint-content" class="hint-content">
+        Посмотри все глитч-файлы и найди отсылки к фильмам.
+      </div>
+    </div>
+
+    <div class="status-msg" id="status-msg"></div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const terminal = document.getElementById('terminal-log');
+      const input = document.getElementById('code-input');
+      const submitBtn = document.getElementById('submit-btn');
+      const statusMsg = document.getElementById('status-msg');
+      const hintBtn = document.getElementById('hint-btn');
+      const hintContent = document.getElementById('hint-content');
+
+      // Логи терминала при загрузке
+      const logs = [
+        '> Инициализация модуля проверки...',
+        '> Статус соединения: <span class="data">АКТИВНО</span>',
+        '> Требуется ключ авторизации.',
+        '> Ожидание ввода...'
+      ];
+
+      let logIndex = 0;
+      function typeLogs() {
+        if (logIndex >= logs.length) return;
+        const div = document.createElement('div');
+        div.className = 'log-line';
+        div.innerHTML = logs[logIndex];
+        terminal.appendChild(div);
+        requestAnimationFrame(() => div.classList.add('visible'));
+        logIndex++;
+        setTimeout(typeLogs, 500);
+      }
+      setTimeout(typeLogs, 300);
+      setTimeout(() => input.focus(), 2200);
+
+      // Валидация кода
+      const VALID_CODE = 'Val1D@ttoR';
+      let attempts = 0;
+      const MAX_ATTEMPTS = 5;
+      const LOCK_TIME = 15000; // 15 секунд
+      let isLocked = false;
+
+      function checkCode() {
+        if (isLocked) return;
+        const userCode = input.value.trim();
+        if (!userCode) return;
+
+        if (userCode === VALID_CODE) {
+          statusMsg.textContent = 'ДОСТУП РАЗРЕШЁН. ПЕРЕНАПРАВЛЕНИЕ...';
+          statusMsg.className = 'status-msg success';
+          submitBtn.disabled = true;
+          input.disabled = true;
+          // Опционально: звук успеха
+          setTimeout(() => window.location.href = 'success.html', 1500);
+        } else {
+          attempts++;
+          statusMsg.textContent = `ОШИБКА СИНХРОНИЗАЦИИ. ПОПЫТКА ${attempts}/${MAX_ATTEMPTS}`;
+          statusMsg.className = 'status-msg error';
+          input.value = '';
+          document.body.classList.add('screen-glitch');
+          setTimeout(() => document.body.classList.remove('screen-glitch'), 300);
+          input.focus();
+
+          if (attempts >= MAX_ATTEMPTS) {
+            isLocked = true;
+            statusMsg.textContent = 'БЛОКИРОВКА СЕССИИ. ПОДОЖДИТЕ.';
+            submitBtn.disabled = true;
+            setTimeout(() => {
+              isLocked = false; attempts = 0;
+              submitBtn.disabled = false;
+              statusMsg.textContent = 'СБРОС БЛОКИРОВКИ.';
+              statusMsg.className = 'status-msg';
+              setTimeout(() => statusMsg.textContent = '', 1500);
+            }, LOCK_TIME);
+          }
+        }
+      }
+
+      submitBtn.addEventListener('click', checkCode);
+      input.addEventListener('keypress', e => { if (e.key === 'Enter') checkCode(); });
+
+      // Подсказка
+      hintBtn.addEventListener('click', () => {
+        const isVisible = hintContent.classList.toggle('show');
+        hintBtn.textContent = isVisible ? '✕ СКРЫТЬ' : '? ПОДСКАЗКА';
+      });
+    });
+  </script>
+</body>
+</html>
