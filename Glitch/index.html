@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GLITCH_ENTRY</title>
+  <style>
+    /* ===== БАЗОВЫЕ СТИЛИ ===== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #050505;
+      color: #0f0;
+      font-family: 'Courier New', monospace;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* ===== ФОНОВЫЙ ШУМ (опционально) ===== */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: 
+        repeating-linear-gradient(
+          0deg,
+          rgba(0, 255, 0, 0.02) 0px,
+          rgba(0, 255, 0, 0.02) 1px,
+          transparent 1px,
+          transparent 2px
+        ),
+        radial-gradient(ellipse at center, rgba(0,0,0,0) 0%, rgba(0,0,0,0.8) 100%);
+      pointer-events: none;
+      z-index: -1;
+      animation: noise 0.2s infinite steps(1);
+    }
+
+    @keyframes noise {
+      0% { transform: translate(0, 0); }
+      10% { transform: translate(-1px, 1px); }
+      20% { transform: translate(1px, -1px); }
+      30% { transform: translate(-1px, -1px); }
+      40% { transform: translate(1px, 1px); }
+      50% { transform: translate(0, 0); }
+      100% { transform: translate(0, 0); }
+    }
+
+    /* ===== КОНТЕЙНЕР ===== */
+    .container {
+      max-width: 800px;
+      width: 100%;
+      text-align: center;
+      z-index: 1;
+    }
+
+    /* ===== ВИДЕО ===== */
+    .video-wrapper {
+      position: relative;
+      width: 100%;
+      max-width: 720px;
+      margin: 0 auto 30px;
+      border: 1px solid #0f0;
+      box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
+      background: #000;
+      aspect-ratio: 16 / 9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .video-wrapper video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .video-placeholder {
+      color: #0f0;
+      font-size: 14px;
+      opacity: 0.6;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    /* ===== ТЕКСТ ПРИВЕТСТВИЯ ===== */
+    .greeting {
+      font-size: 1.4rem;
+      margin: 20px 0 40px;
+      line-height: 1.6;
+      text-shadow: 0 0 5px rgba(0, 255, 0, 0.7);
+      position: relative;
+    }
+
+    /* Глитч-эффект для текста */
+    .glitch {
+      position: relative;
+      animation: glitch 3s infinite;
+    }
+
+    .glitch::before,
+    .glitch::after {
+      content: attr(data-text);
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .glitch::before {
+      color: #f00;
+      animation: glitch-1 0.3s infinite linear alternate-reverse;
+      clip-path: polygon(0 0, 100% 0, 100% 35%, 0 35%);
+      opacity: 0.8;
+    }
+
+    .glitch::after {
+      color: #0ff;
+      animation: glitch-2 0.3s infinite linear alternate-reverse;
+      clip-path: polygon(0 65%, 100% 65%, 100% 100%, 0 100%);
+      opacity: 0.8;
+    }
+
+    @keyframes glitch {
+      0%, 90%, 100% { transform: translate(0); }
+      92% { transform: translate(-2px, 1px); }
+      94% { transform: translate(2px, -1px); }
+      96% { transform: translate(-1px, 2px); }
+      98% { transform: translate(1px, -2px); }
+    }
+
+    @keyframes glitch-1 {
+      0% { clip-path: polygon(0 20%, 100% 20%, 100% 40%, 0 40%); transform: translate(0); }
+      25% { clip-path: polygon(0 10%, 100% 10%, 100% 30%, 0 30%); transform: translate(-2px, 1px); }
+      50% { clip-path: polygon(0 30%, 100% 30%, 100% 50%, 0 50%); transform: translate(2px, -1px); }
+      75% { clip-path: polygon(0 5%, 100% 5%, 100% 25%, 0 25%); transform: translate(-1px, 2px); }
+      100% { clip-path: polygon(0 15%, 100% 15%, 100% 35%, 0 35%); transform: translate(1px, -2px); }
+    }
+
+    @keyframes glitch-2 {
+      0% { clip-path: polygon(0 60%, 100% 60%, 100% 80%, 0 80%); transform: translate(0); }
+      25% { clip-path: polygon(0 70%, 100% 70%, 100% 90%, 0 90%); transform: translate(2px, -1px); }
+      50% { clip-path: polygon(0 50%, 100% 50%, 100% 70%, 0 70%); transform: translate(-2px, 1px); }
+      75% { clip-path: polygon(0 80%, 100% 80%, 100% 100%, 0 100%); transform: translate(1px, -2px); }
+      100% { clip-path: polygon(0 65%, 100% 65%, 100% 85%, 0 85%); transform: translate(-1px, 2px); }
+    }
+
+    /* ===== КНОПКИ ===== */
+    .buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .btn {
+      width: 100%;
+      max-width: 400px;
+      padding: 18px 24px;
+      background: transparent;
+      border: 2px solid #0f0;
+      color: #0f0;
+      font-family: 'Courier New', monospace;
+      font-size: 1.1rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.2s ease;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .btn::before {
+      content: "";
+      position: absolute;
+      top: 0; left: -100%;
+      width: 100%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(0, 255, 0, 0.2), transparent);
+      transition: left 0.4s ease;
+    }
+
+    .btn:hover {
+      background: rgba(0, 255, 0, 0.1);
+      box-shadow: 0 0 15px rgba(0, 255, 0, 0.6);
+      transform: translateY(-2px);
+    }
+
+    .btn:hover::before {
+      left: 100%;
+    }
+
+    .btn:active {
+      transform: translateY(0);
+      box-shadow: 0 0 5px rgba(0, 255, 0, 0.3);
+    }
+
+    /* Вторая кнопка — чуть другой акцент */
+    .btn.secondary {
+      border-color: #0ff;
+      color: #0ff;
+    }
+
+    .btn.secondary:hover {
+      background: rgba(0, 255, 255, 0.1);
+      box-shadow: 0 0 15px rgba(0, 255, 255, 0.6);
+    }
+
+    .btn.secondary::before {
+      background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.2), transparent);
+    }
+
+    /* ===== АДАПТИВ ===== */
+    @media (max-width: 600px) {
+      .greeting {
+        font-size: 1.1rem;
+        padding: 0 10px;
+      }
+      .btn {
+        padding: 16px 20px;
+        font-size: 1rem;
+      }
+      .video-wrapper {
+        max-width: 100%;
+      }
+    }
+
+    /* ===== СКРЫТЬ ПРИ ЗАГРУЗКЕ (для плавного появления) ===== */
+    .fade-in {
+      animation: fadeIn 1s ease forwards;
+      opacity: 0;
+    }
+
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
+
+    .delay-1 { animation-delay: 0.3s; }
+    .delay-2 { animation-delay: 0.6s; }
+    .delay-3 { animation-delay: 0.9s; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    
+    <!-- Видео -->
+    <div class="video-wrapper fade-in">
+      <!-- 
+        ЗАМЕНИТЕ НИЖЕ НА СВОЁ ВИДЕО:
+        1. Загрузите видео в папку /assets/
+        2. Раскомментируйте тег <video> и удалите .video-placeholder
+      -->
+      <!--
+      <video autoplay loop muted playsinline>
+        <source src="assets/intro.mp4" type="video/mp4">
+        Ваш браузер не поддерживает видео.
+      </video>
+      -->
+      <div class="video-placeholder">[ VIDEO PLACEHOLDER ]<br>Загрузите intro.mp4 в /assets/</div>
+    </div>
+
+    <!-- Приветствие -->
+    <p class="greeting glitch fade-in delay-1" data-text="Приветствую тебя странник сети. Как ты попал сюда?">
+      Приветствую тебя странник сети. Как ты попал сюда?
+    </p>
+
+    <!-- Кнопки -->
+    <div class="buttons fade-in delay-2">
+      <a href="code.html" class="btn">1. С ютуб канала</a>
+      <a href="about.html" class="btn secondary">2. Попал случайно</a>
+    </div>
+
+  </div>
+
+  <script>
+    // Опционально: добавить звук при наведении на кнопки
+    document.querySelectorAll('.btn').forEach(btn => {
+      btn.addEventListener('mouseenter', () => {
+        // Раскомментируйте, если добавите звуковой файл
+        // new Audio('assets/hover.mp3').play().catch(() => {});
+      });
+    });
+
+    // Опционально: скрыть placeholder после загрузки реального видео
+    // document.querySelector('video')?.addEventListener('loadeddata', function() {
+    //   document.querySelector('.video-placeholder').style.display = 'none';
+    // });
+  </script>
+</body>
+</html>
