@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CHRONO_DECRYPT // DATE_INPUT</title>
+  <style>
+    /* ===== БАЗОВЫЕ СТИЛИ (единые со всеми страницами) ===== */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #050505; color: #0f0; font-family: 'Courier New', monospace;
+      min-height: 100vh; display: flex; flex-direction: column; align-items: center;
+      justify-content: center; padding: 20px; overflow-x: hidden; position: relative;
+    }
+    body::before {
+      content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: repeating-linear-gradient(0deg, rgba(0,255,0,0.02) 0px, rgba(0,255,0,0.02) 1px, transparent 1px, transparent 2px);
+      pointer-events: none; z-index: -1; animation: noise 0.15s infinite steps(1);
+    }
+    @keyframes noise { 0% { transform: translate(0,0); } 50% { transform: translate(-1px,1px); } 100% { transform: translate(1px,-1px); } }
+
+    .container { max-width: 700px; width: 100%; text-align: center; z-index: 1; }
+
+    /* ===== ЗАГОЛОВОК И ГЛИТЧ ===== */
+    .title { font-size: 1.4rem; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 25px; text-shadow: 0 0 10px rgba(0,255,0,0.7); }
+    .glitch { position: relative; animation: glitch 4s infinite; }
+    .glitch::before, .glitch::after { content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+    .glitch::before { color: #f00; animation: glitch-1 0.3s infinite linear alternate-reverse; clip-path: polygon(0 0, 100% 0, 100% 35%, 0 35%); opacity: 0.7; }
+    .glitch::after { color: #0ff; animation: glitch-2 0.3s infinite linear alternate-reverse; clip-path: polygon(0 65%, 100% 65%, 100% 100%, 0 100%); opacity: 0.7; }
+    @keyframes glitch { 0%,90%,100% { transform: translate(0); } 92% { transform: translate(-2px,1px); } 96% { transform: translate(1px,-1px); } }
+    @keyframes glitch-1 { 0% { clip-path: polygon(0 20%, 100% 20%, 100% 40%, 0 40%); transform: translate(-1px,0); } 100% { clip-path: polygon(0 10%, 100% 10%, 100% 30%, 0 30%); transform: translate(1px,0); } }
+    @keyframes glitch-2 { 0% { clip-path: polygon(0 60%, 100% 60%, 100% 80%, 0 80%); transform: translate(1px,0); } 100% { clip-path: polygon(0 70%, 100% 70%, 100% 90%, 0 90%); transform: translate(-1px,0); } }
+
+    /* ===== ТЕРМИНАЛ ===== */
+    .terminal {
+      background: rgba(0, 20, 0, 0.3); border: 1px solid #0f0; border-radius: 4px;
+      padding: 20px; text-align: left; margin-bottom: 25px; box-shadow: 0 0 15px rgba(0,255,0,0.1);
+      min-height: 110px; position: relative; overflow: hidden;
+    }
+    .terminal::after {
+      content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      background: linear-gradient(transparent 50%, rgba(0,255,0,0.02) 50%); background-size: 100% 4px; pointer-events: none;
+    }
+    .log-line { margin: 5px 0; font-size: 0.9rem; line-height: 1.5; opacity: 0; transform: translateX(-5px); transition: opacity 0.3s, transform 0.3s; }
+    .log-line.visible { opacity: 1; transform: translateX(0); }
+    .log-line .prompt { color: #0f0; } .log-line .data { color: #0ff; } .log-line .warn { color: #f00; }
+
+    /* ===== ВВОД ===== */
+    .input-wrapper { display: flex; gap: 10px; justify-content: center; margin-bottom: 15px; flex-wrap: wrap; }
+    #dates-input {
+      background: rgba(0, 10, 0, 0.5); border: 2px solid #0f0; color: #0f0;
+      font-family: 'Courier New', monospace; font-size: 1.1rem; padding: 12px 15px;
+      width: 320px; max-width: 100%; outline: none; letter-spacing: 2px; text-align: center; transition: all 0.2s;
+    }
+    #dates-input:focus { border-color: #0ff; box-shadow: 0 0 10px rgba(0,255,255,0.4); }
+    #dates-input::placeholder { color: rgba(0, 255, 0, 0.35); letter-spacing: 1px; }
+
+    .btn {
+      background: transparent; border: 2px solid #0f0; color: #0f0;
+      font-family: 'Courier New', monospace; font-size: 1rem; text-transform: uppercase;
+      letter-spacing: 2px; cursor: pointer; padding: 12px 20px; transition: all 0.2s; position: relative; overflow: hidden; text-decoration: none; display: inline-block;
+    }
+    .btn:hover { background: rgba(0,255,0,0.1); box-shadow: 0 0 15px rgba(0,255,0,0.5); transform: translateY(-2px); }
+    .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
+    .btn.next { border-color: #0ff; color: #0ff; }
+    .btn.next:hover { background: rgba(0,255,255,0.1); box-shadow: 0 0 15px rgba(0,255,255,0.5); }
+
+    /* ===== СТАТУС И УСПЕХ ===== */
+    .status-msg { margin: 15px 0 10px; min-height: 20px; font-size: 1rem; text-transform: uppercase; letter-spacing: 1px; transition: all 0.3s; }
+    .status-msg.error { color: #f00; text-shadow: 0 0 8px rgba(255,0,0,0.6); animation: shake 0.4s; }
+    @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+
+    .success-container { display: none; margin-top: 25px; text-align: center; }
+    .success-container.show { display: block; animation: fadeIn 0.8s ease forwards; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+    .password-display {
+      font-size: 1.3rem; color: #ff0; letter-spacing: 3px; margin: 10px 0;
+      text-shadow: 0 0 10px rgba(255,255,0,0.5); padding: 10px;
+      border: 1px dashed #ff0; background: rgba(255,255,0,0.05); display: inline-block;
+    }
+
+    .copy-btn { border-color: #0ff; color: #0ff; font-size: 0.85rem; padding: 8px 14px; margin-bottom: 12px; }
+    .copy-btn:hover { background: rgba(0,255,255,0.1); }
+
+    .hint-text { font-size: 0.8rem; color: rgba(0,255,0,0.5); margin-top: 5px; letter-spacing: 0.5px; }
+
+    @media (max-width: 600px) {
+      .title { font-size: 1.1rem; }
+      .input-wrapper { flex-direction: column; align-items: center; }
+      #dates-input { width: 100%; }
+      .btn { width: 100%; max-width: 280px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 class="title glitch" data-text="ДЕКОДИРОВАНИЕ ХРОНО-КЛЮЧА">ДЕКОДИРОВАНИЕ ХРОНО-КЛЮЧА</h1>
+    
+    <div class="terminal" id="terminal-log"></div>
+
+    <div class="input-wrapper">
+      <input type="text" id="dates-input" placeholder="1984 1999 2008 2016" autocomplete="off">
+      <button id="submit-btn" class="btn">ВВЕСТИ КЛЮЧ</button>
+    </div>
+    <p class="hint-text">Формат: 4 года в хронологическом порядке (разделители не важны)</p>
+
+    <div class="status-msg" id="status-msg"></div>
+
+    <div class="success-container" id="success-container">
+      <p class="log-line visible" style="color:#0f0; font-size:1.1rem;">✓ АРХИВ РАЗБЛОКИРОВАН</p>
+      <p style="margin:8px 0; color:#0ff;">Пароль доступа:</p>
+      <div class="password-display" id="password-display">N0_MERCY_2026</div>
+      <br>
+      <button id="copy-btn" class="btn copy-btn">📋 СКОПИРОВАТЬ ПАРОЛЬ</button>
+      <br>
+      <!-- ЗАМЕНИТЕ ССЫЛКУ НА ВАШ АРХИВ (Google Drive, Pastebin, ZIP и т.д.) -->
+      <a href="https://drive.google.com/your-archive-link" target="_blank" class="btn next">▶ ОТКРЫТЬ АРХИВ</a>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const terminal = document.getElementById('terminal-log');
+      const input = document.getElementById('dates-input');
+      const submitBtn = document.getElementById('submit-btn');
+      const statusMsg = document.getElementById('status-msg');
+      const successContainer = document.getElementById('success-container');
+      const copyBtn = document.getElementById('copy-btn');
+
+      // ⚙️ НАСТРОЙКА: УКАЖИ ПРАВИЛЬНЫЕ ДАТЫ БЕЗ РАЗДЕЛИТЕЛЕЙ (12 цифр)
+      const CORRECT_DATES = '1984199920082016'; // ← ЗАМЕНИ НА СВОИ 4 ГОДА
+
+      // Логи терминала
+      const logs = [
+        '> Обнаружен запрос на разблокировку архива.',
+        '> Метод верификации: <span class="data">ХРОНО-СИНХРОНИЗАЦИЯ</span>',
+        '> Найди в главном видео отсылки к 4 фильмам.',
+        '> Выпиши годы выхода. Введи в порядке возрастания.',
+        '> Ожидание ключа...'
+      ];
+
+      let logIndex = 0;
+      function typeLogs() {
+        if (logIndex >= logs.length) return;
+        const div = document.createElement('div');
+        div.className = 'log-line';
+        div.innerHTML = logs[logIndex];
+        terminal.appendChild(div);
+        requestAnimationFrame(() => div.classList.add('visible'));
+        logIndex++;
+        setTimeout(typeLogs, 550);
+      }
+      setTimeout(typeLogs, 400);
+      setTimeout(() => input.focus(), 3200);
+
+      // Валидация
+      let attempts = 0;
+      function checkDates() {
+        if (submitBtn.disabled) return;
+        const raw = input.value.trim();
+        const cleaned = raw.replace(/[\s\-\.\,]/g, ''); // удаляем всё кроме цифр
+
+        if (cleaned.length < 12 || !/^\d+$/.test(cleaned)) {
+          statusMsg.textContent = 'ОШИБКА: ВВЕДИТЕ 4 ЧИСЛА (ГОДЫ)';
+          statusMsg.className = 'status-msg error';
+          triggerGlitch();
+          return;
+        }
+
+        if (cleaned === CORRECT_DATES) {
+          statusMsg.textContent = '';
+          submitBtn.disabled = true;
+          input.disabled = true;
+          successContainer.classList.add('show');
+        } else {
+          attempts++;
+          statusMsg.textContent = `СИНХРОНИЗАЦИЯ НЕ УДАЛАСЬ. ПОПЫТКА ${attempts}/5`;
+          statusMsg.className = 'status-msg error';
+          triggerGlitch();
+          input.value = '';
+          if (attempts >= 5) {
+            submitBtn.disabled = true;
+            statusMsg.textContent = 'БЛОКИРОВКА. ПОДОЖДИТЕ 30 СЕК...';
+            setTimeout(() => { attempts = 0; submitBtn.disabled = false; statusMsg.textContent = ''; }, 30000);
+          }
+        }
+      }
+
+      function triggerGlitch() {
+        document.body.classList.add('screen-glitch');
+        setTimeout(() => document.body.classList.remove('screen-glitch'), 300);
+      }
+
+      submitBtn.addEventListener('click', checkDates);
+      input.addEventListener('keypress', e => { if (e.key === 'Enter') checkDates(); });
+
+      // Копирование пароля
+      copyBtn.addEventListener('click', async () => {
+        const pwd = document.getElementById('password-display').textContent;
+        try {
+          await navigator.clipboard.writeText(pwd);
+          copyBtn.textContent = '✓ СКОПИРОВАНО';
+          setTimeout(() => copyBtn.textContent = '📋 СКОПИРОВАТЬ ПАРОЛЬ', 2000);
+        } catch {
+          copyBtn.textContent = '❌ ОШИБКА КОПИРОВАНИЯ';
+        }
+      });
+    });
+  </script>
+</body>
+</html>
