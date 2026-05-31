@@ -100,7 +100,7 @@
         <br>
         <span class="highlight">СЛЕДУЮЩИЙ КЛЮЧ:</span> <span id="next-key" class="data">ОЖИДАНИЕ...</span>
       </p>
-      <!-- ЗАМЕНИТЕ ССЫЛКУ НА СЛЕДУЮЩЕЕ ВИДЕО/СТРАНИЦУ -->
+     
       <a href="https://youtube.com/@GG_GlitchGoblin" target="_blank" class="btn next">▶ ПЕРЕЙТИ К СЛЕДУЮЩЕМУ СИГНАЛУ</a>
     </div>
   </div>
@@ -156,7 +156,7 @@
       function finishUnlock() {
         setTimeout(() => {
           lore.classList.add('show');
-          nextKey.textContent = 'GL1TCH_PHASE2'; // ← ЗАМЕНИТЕ НА СЛЕДУЮЩИЙ КОД
+          nextKey.textContent = 'GL1TCH_PHASE2'; 
           progress.style.boxShadow = '0 0 15px #0ff';
           progress.style.background = '#0ff';
           
@@ -164,6 +164,7 @@
           console.log('%c[СИСТЕМА] Архив разблокирован. Проверь консоль.', 'color:#0f0; font-size:14px;');
           terminal.addEventListener('click', () => {
             secretLayer.classList.toggle('active');
+            argTrack('secret_layer_clicked', { source: 'terminal' });
           });
         }, 600);
       }
