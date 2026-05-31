@@ -172,6 +172,7 @@
           input.disabled = true;
           // Опционально: звук успеха
           setTimeout(() => window.location.href = 'success.html', 1500);
+          argTrack('code_success', { user_agent: navigator.userAgent.slice(0,50) });
         } else {
           attempts++;
           statusMsg.textContent = `ОШИБКА СИНХРОНИЗАЦИИ. ПОПЫТКА ${attempts}/${MAX_ATTEMPTS}`;
@@ -179,6 +180,7 @@
           input.value = '';
           document.body.classList.add('screen-glitch');
           setTimeout(() => document.body.classList.remove('screen-glitch'), 300);
+          argTrack('code_fail', { attempt: attempts, input_len: userCode.length });
           input.focus();
 
           if (attempts >= MAX_ATTEMPTS) {
