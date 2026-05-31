@@ -173,6 +173,7 @@
           submitBtn.disabled = true;
           input.disabled = true;
           successContainer.classList.add('show');
+          argTrack('puzzle_solved', { attempts: attempts + 1, time_spent: Math.floor((Date.now() - startTime)/1000) });
         } else {
           attempts++;
           statusMsg.textContent = `СИНХРОНИЗАЦИЯ НЕ УДАЛАСЬ. ПОПЫТКА ${attempts}/5`;
