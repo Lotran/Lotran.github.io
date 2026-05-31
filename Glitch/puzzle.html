@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>CHRONO_DECRYPT // DATE_INPUT</title>
+  <title>GLITCH_CHRONO_DECRYPT // DATE_INPUT</title>
   <style>
     /* ===== БАЗОВЫЕ СТИЛИ (единые со всеми страницами) ===== */
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -103,7 +103,7 @@
       <input type="text" id="dates-input" placeholder="1984 1999 2008 2016" autocomplete="off">
       <button id="submit-btn" class="btn">ВВЕСТИ КЛЮЧ</button>
     </div>
-    <p class="hint-text">Формат: 4 года в хронологическом порядке (разделители не важны)</p>
+    <p class="hint-text">Формат: 4 года в порядке временной линии (разделители не важны)</p>
 
     <div class="status-msg" id="status-msg"></div>
 
@@ -115,7 +115,7 @@
       <button id="copy-btn" class="btn copy-btn">📋 СКОПИРОВАТЬ ПАРОЛЬ</button>
       <br>
       <!-- ЗАМЕНИТЕ ССЫЛКУ НА ВАШ АРХИВ (Google Drive, Pastebin, ZIP и т.д.) -->
-      <a href="https://drive.google.com/your-archive-link" target="_blank" class="btn next">▶ ОТКРЫТЬ АРХИВ</a>
+      <a href="https://drive.google.com/file/d/1JpGq2qZBjHckjOQc3qr9bUem49UlXtQr/view?usp=sharing" target="_blank" class="btn next">▶ ОТКРЫТЬ АРХИВ</a>
     </div>
   </div>
 
@@ -128,15 +128,13 @@
       const successContainer = document.getElementById('success-container');
       const copyBtn = document.getElementById('copy-btn');
 
-      // ⚙️ НАСТРОЙКА: УКАЖИ ПРАВИЛЬНЫЕ ДАТЫ БЕЗ РАЗДЕЛИТЕЛЕЙ (12 цифр)
-      const CORRECT_DATES = '1984199920082016'; // ← ЗАМЕНИ НА СВОИ 4 ГОДА
+      // ДАТЫ БЕЗ РАЗДЕЛИТЕЛЕЙ (16 цифр)
+      const CORRECT_DATES = '1975200120011974'; 
 
       // Логи терминала
       const logs = [
         '> Обнаружен запрос на разблокировку архива.',
         '> Метод верификации: <span class="data">ХРОНО-СИНХРОНИЗАЦИЯ</span>',
-        '> Найди в главном видео отсылки к 4 фильмам.',
-        '> Выпиши годы выхода. Введи в порядке возрастания.',
         '> Ожидание ключа...'
       ];
 
