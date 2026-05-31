@@ -285,14 +285,10 @@
     document.querySelectorAll('.btn').forEach(btn => {
       btn.addEventListener('mouseenter', () => {
         // Раскомментируйте, если добавите звуковой файл
-        // new Audio('assets/hover.mp3').play().catch(() => {});
+         new Audio('assets/hover.mp3').play().catch(() => {});
       });
     });
 
-    // Опционально: скрыть placeholder после загрузки реального видео
-    // document.querySelector('video')?.addEventListener('loadeddata', function() {
-    //   document.querySelector('.video-placeholder').style.display = 'none';
-    // });
   </script>
 </body>
 </html>
