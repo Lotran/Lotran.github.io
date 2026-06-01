@@ -21,7 +21,7 @@
     lastEventTime = now;
 // Отправка в глобальный счётчик (анонимно)
 try {
-  fetch(`https://api.countapi.xyz/hit/glitch-arg-project/${event}`);
+  fetch(`https://api.countapi.xyz/hit/glitch-arg-v1/${event}`);
 } catch(e) {}
     // 1. Локальное сохранение (работает всегда, даже оффлайн)
     const localKey = `${CONFIG.PROJECT_ID}_${event}`;
