@@ -9,10 +9,28 @@
   <h2>> SYSTEM_METRICS</h2>
   <div id="stats"></div>
   <script>
-    const keys = Object.keys(localStorage).filter(k => k.startsWith('glitch_arg'));
-    document.getElementById('stats').innerHTML = keys.length ? 
-      keys.map(k => `<div class="stat">${k.replace('glitch_arg_', '')}: ${localStorage.getItem(k)}</div>`).join('') : 
-      '<div class="stat">Нет данных. Ждём трафик...</div>';
+   async function loadGlobalStats() {
+  const events = ['page_load', 'code_success', 'puzzle_solved', 'secret_layer_clicked'];
+  const container = document.getElementById('stats');
+  container.innerHTML = '<div class="stat">Загрузка данных...</div>';
+
+  let html = '<h3>🌍 ГЛОБАЛЬНАЯ СТАТИСТИКА (Все игроки)</h3>';
+
+  for (let event of events) {
+    try {
+      const res = await fetch(`https://api.countapi.xyz/get/glitch-arg-project/${event}`);
+      const data = await res.json();
+      html += `<div class="stat">📊 ${event}: <b>${data.value || 0}</b></div>`;
+    } catch (e) {
+      html += `<div class="stat" style="color:#f00">❌ ${event}: Ошибка</div>`;
+    }
+  }
+  
+  container.innerHTML = html;
+}
+
+// Запуск при загрузке
+document.addEventListener('DOMContentLoaded', loadGlobalStats);
   </script>
   <!-- Кнопка сброса -->
 <div style="margin-top: 30px; border-top: 1px dashed #0f0; padding-top: 15px;">
