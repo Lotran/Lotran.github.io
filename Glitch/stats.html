@@ -14,5 +14,28 @@
       keys.map(k => `<div class="stat">${k.replace('glitch_arg_', '')}: ${localStorage.getItem(k)}</div>`).join('') : 
       '<div class="stat">Нет данных. Ждём трафик...</div>';
   </script>
+  <!-- Кнопка сброса -->
+<div style="margin-top: 30px; border-top: 1px dashed #0f0; padding-top: 15px;">
+  <button onclick="clearStats()" style="
+    background: transparent; border: 1px solid #f00; color: #f00; 
+    padding: 8px 16px; cursor: pointer; font-family: monospace; text-transform: uppercase;
+  ">⚠️ СБРОСИТЬ СТАТИСТИКУ</button>
+</div>
+
+<script>
+  function clearStats() {
+    if (confirm("Точно удалить все накопленные данные? Это действие нельзя отменить.")) {
+      // Проходим по всем ключам в localStorage
+      Object.keys(localStorage).forEach(key => {
+        // Если ключ начинается с префикса твоего проекта — удаляем
+        if (key.startsWith('glitch_arg_')) {
+          localStorage.removeItem(key);
+        }
+      });
+      alert("Данные очищены. Перезагрузка...");
+      location.reload(); // Перезагружаем страницу, чтобы видеть нули
+    }
+  }
+</script>
 </body>
 </html>
