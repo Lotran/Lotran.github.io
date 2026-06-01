@@ -74,20 +74,6 @@ document.addEventListener('DOMContentLoaded', loadGlobalStats);
   ">⚠️ СБРОСИТЬ СТАТИСТИКУ</button>
 </div>
 
-<script>
-  function clearStats() {
-    if (confirm("Точно удалить все накопленные данные? Это действие нельзя отменить.")) {
-      // Проходим по всем ключам в localStorage
-      Object.keys(localStorage).forEach(key => {
-        // Если ключ начинается с префикса твоего проекта — удаляем
-        if (key.startsWith('glitch_arg_')) {
-          localStorage.removeItem(key);
-        }
-      });
-      alert("Данные очищены. Перезагрузка...");
-      location.reload(); // Перезагружаем страницу, чтобы видеть нули
-    }
-  }
-</script>
+
 </body>
 </html>
