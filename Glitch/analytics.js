@@ -4,7 +4,7 @@
 
   const CONFIG = {
     
-    DISCORD_WEBHOOK: 'https://discord.com/api/webhooks/1510709650385928253/ZTegs8UrxkNmxvx9ZH9Cfm5UsBTio3JjqZqM0AUx8P3hi8g5PTqESamsn96F2eZoLle5',
+    DISCORD_WEBHOOK: '',
     PROJECT_ID: 'glitch_arg_v1',
     RATE_LIMIT: 3000 // мин. интервал между событиями (мс)
   };
