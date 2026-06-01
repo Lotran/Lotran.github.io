@@ -9,27 +9,61 @@
   <h2>> SYSTEM_METRICS</h2>
   <div id="stats"></div>
   <script>
-   async function loadGlobalStats() {
+async function loadGlobalStats() {
   const events = ['page_load', 'code_success', 'puzzle_solved', 'secret_layer_clicked'];
   const container = document.getElementById('stats');
-  container.innerHTML = '<div class="stat">Загрузка данных...</div>';
-
+  const NAMESPACE = 'glitch-arg-v1'; // Уникальное имя проекта
   let html = '<h3>🌍 ГЛОБАЛЬНАЯ СТАТИСТИКА (Все игроки)</h3>';
 
   for (let event of events) {
     try {
-      const res = await fetch(`https://api.countapi.xyz/get/glitch-arg-project/${event}`);
-      const data = await res.json();
-      html += `<div class="stat">📊 ${event}: <b>${data.value || 0}</b></div>`;
+      // Сначала пытаемся получить данные
+      let res = await fetch(`https://api.countapi.xyz/get/${NAMESPACE}/${event}`);
+      let data = await res.json();
+      
+      // Если ошибка (счётчик не существует) — создаём его
+      if (data.error || !data.value) {
+        // Создаём счётчик с нулём
+        await fetch(`https://api.countapi.xyz/hit/${NAMESPACE}/${event}`);
+        html += `<div class="stat">⚪ ${event}: <b>0</b> (ожидание данных)</div>`;
+      } else {
+        html += `<div class="stat">📊 ${event}: <b style="color:#0f0">${data.value}</b></div>`;
+      }
     } catch (e) {
-      html += `<div class="stat" style="color:#f00">❌ ${event}: Ошибка</div>`;
+      html += `<div class="stat" style="color:#f00">❌ ${event}: Нет соединения</div>`;
     }
+  }
+  
+  // Добавляем инфо о локальной статистике
+  html += '<br><h3>💾 ЛОКАЛЬНАЯ СТАТИСТИКА (Твой браузер)</h3>';
+  const localKeys = Object.keys(localStorage).filter(k => k.startsWith('glitch_arg_'));
+  if (localKeys.length > 0) {
+    localKeys.forEach(key => {
+      const value = localStorage.getItem(key);
+      const eventName = key.replace('glitch_arg_', '');
+      html += `<div class="stat">📁 ${eventName}: <b>${value}</b></div>`;
+    });
+  } else {
+    html += '<div class="stat">Нет локальных данных</div>';
   }
   
   container.innerHTML = html;
 }
 
-// Запуск при загрузке
+// Функция сброса
+function clearStats() {
+  if (confirm("⚠️ Сбросить ЛОКАЛЬНУЮ статистику? Глобальная останется.")) {
+    Object.keys(localStorage).forEach(key => {
+      if (key.startsWith('glitch_arg_')) {
+        localStorage.removeItem(key);
+      }
+    });
+    alert("✅ Локальные данные очищены");
+    location.reload();
+  }
+}
+
+// Запуск
 document.addEventListener('DOMContentLoaded', loadGlobalStats);
   </script>
   <!-- Кнопка сброса -->
