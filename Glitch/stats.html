@@ -11,28 +11,24 @@
   <script>
 async function loadGlobalStats() {
   const events = ['page_load', 'code_success', 'puzzle_solved', 'secret_layer_clicked'];
+  const userId = 'GlitchGoblin-arg-2026';
   const container = document.getElementById('stats');
-  const NAMESPACE = 'glitch-arg-v1'; // Уникальное имя проекта
-  let html = '<h3>🌍 ГЛОБАЛЬНАЯ СТАТИСТИКА (Все игроки)</h3>';
-
+  
+  let html = '<h3>🌍 ГЛОБАЛЬНАЯ СТАТИСТИКА</h3>';
+  
   for (let event of events) {
     try {
-      // Сначала пытаемся получить данные
-      let res = await fetch(`https://api.countapi.xyz/get/${NAMESPACE}/${event}`);
-      let data = await res.json();
-      
-      // Если ошибка (счётчик не существует) — создаём его
-      if (data.error || !data.value) {
-        // Создаём счётчик с нулём
-        await fetch(`https://api.countapi.xyz/hit/${NAMESPACE}/${event}`);
-        html += `<div class="stat">⚪ ${event}: <b>0</b> (ожидание данных)</div>`;
-      } else {
-        html += `<div class="stat">📊 ${event}: <b style="color:#0f0">${data.value}</b></div>`;
-      }
+      const res = await fetch(`https://api.countapi.xyz/get/${userId}/${event}`);
+      const data = await res.json();
+      const count = data.value || 0;
+      html += `<div class="stat">📊 ${event}: <b style="color:#0f0">${count}</b></div>`;
     } catch (e) {
-      html += `<div class="stat" style="color:#f00">❌ ${event}: Нет соединения</div>`;
+      html += `<div class="stat">⚪ ${event}: <b>0</b></div>`;
     }
   }
+  
+  container.innerHTML = html;
+}
   
   // Добавляем инфо о локальной статистике
   html += '<br><h3>💾 ЛОКАЛЬНАЯ СТАТИСТИКА (Твой браузер)</h3>';
