@@ -27,9 +27,9 @@ async function loadGlobalStats() {
     }
   }
   
-  container.innerHTML = html;
-}
   
+}
+  container.innerHTML = html;
   // Добавляем инфо о локальной статистике
   html += '<br><h3>💾 ЛОКАЛЬНАЯ СТАТИСТИКА (Твой браузер)</h3>';
   const localKeys = Object.keys(localStorage).filter(k => k.startsWith('glitch_arg_'));
