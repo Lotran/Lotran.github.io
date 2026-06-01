@@ -3,7 +3,7 @@
   'use strict';
 
   const CONFIG = {
-    // Вставь свой вебхук или оставь пустым ('') для режима "только локально"
+    
     DISCORD_WEBHOOK: 'https://discord.com/api/webhooks/1510709650385928253/ZTegs8UrxkNmxvx9ZH9Cfm5UsBTio3JjqZqM0AUx8P3hi8g5PTqESamsn96F2eZoLle5',
     PROJECT_ID: 'glitch_arg_v1',
     RATE_LIMIT: 3000 // мин. интервал между событиями (мс)
