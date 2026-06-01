@@ -48,6 +48,9 @@
     const page = location.pathname.split('/').pop() || 'index.html';
     argTrack('page_load', { page, ref: document.referrer || 'direct' });
   });
-
+// Отправка в глобальный счётчик (анонимно)
+try {
+  fetch(`https://api.countapi.xyz/hit/glitch-arg-project/${event}`);
+} catch(e) {}
   console.log('%c[ARG] ✅ Модуль аналитики загружен.', 'color:#0f0; font-weight:bold');
 })();
