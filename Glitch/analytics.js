@@ -11,23 +11,20 @@
 
   let lastEventTime = 0;
 
-  // Глобальная функция для вызова из любого места
+
   window.argTrack = function(event, details = {}) {
-    const now = Date.now();
-    if (now - lastEventTime < CONFIG.RATE_LIMIT) {
-      console.warn('[ARG] Rate limit. Событие пропущено.');
-      return;
-    }
-    lastEventTime = now;
-// Отправка в глобальный счётчик (анонимно)
-try {
-  fetch(`https://api.countapi.xyz/hit/glitch-arg-v1/${event}`);
-} catch(e) {}
-    // 1. Локальное сохранение (работает всегда, даже оффлайн)
-    const localKey = `${CONFIG.PROJECT_ID}_${event}`;
-    const count = parseInt(localStorage.getItem(localKey) || '0') + 1;
-    localStorage.setItem(localKey, count);
-    console.log(`%c[ARG] 📦 ${event} | Локально: ${count}`, 'color:#0f0');
+  // Локально (уже работает)
+  const localKey = `glitch_arg_${event}`;
+  const count = parseInt(localStorage.getItem(localKey) || '0') + 1;
+  localStorage.setItem(localKey, count);
+  console.log(`%c[ARG] 📦 ${event} | Локально: ${count}`, 'color:#0f0');
+  
+  // Глобально (простой API)
+  const userId = 'GlitchGoblin-arg-2026'; // Уникальное имя
+  fetch(`https://api.countapi.xyz/hit/${userId}/${event}`)
+    .catch(e => console.log('Stats offline'));
+};
+    
 
     // 2. Отправка в Discord (если задан URL)
     if (CONFIG.DISCORD_WEBHOOK && CONFIG.DISCORD_WEBHOOK.startsWith('https://')) {
