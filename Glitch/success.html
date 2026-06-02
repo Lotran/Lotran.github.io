@@ -97,6 +97,7 @@
         <span class="highlight">[ФРАГМЕНТ 01 РАСШИФРОВАН]</span><br>
         Ты вошёл в систему. Данные сохранены. Следующий сигнал будет передан через повреждённый канал.<br>
         Ищи артефакты в визуальном шуме. Не верь тишине.<br>
+        <span id="element-key" class="data">...</span><br>
         <br>
         <span class="highlight">СЛЕДУЮЩИЙ КЛЮЧ:</span> <span id="next-key" class="data">ОЖИДАНИЕ...</span>
       </p>
@@ -110,7 +111,7 @@
     ██ СИСТЕМНОЕ СООБЩЕНИЕ ██<br>
     Они слушают. Не используй публичные сети.<br>
     Пароль для архива: <span style="color:#0f0">N0_MERCY_2026</span><br>
-    <a href="puzzle.html" style="font-size:0.55rem; color:#f00;">▶ НАЧАТЬ ДЕКОДИРОВАНИЕ</a>
+    <a href="puzzle.html" style="font-size:0.60rem; color:#f00;">▶ НАЧАТЬ ДЕКОДИРОВАНИЕ</a>
   </div>
 
   <script>
@@ -119,6 +120,7 @@
       const progress = document.getElementById('progress');
       const lore = document.getElementById('lore');
       const nextKey = document.getElementById('next-key');
+      const elementKey = document.getElementById('element-key');
       const secretLayer = document.getElementById('secret-layer');
 
       // Логи "расшифровки"
@@ -157,6 +159,7 @@
         setTimeout(() => {
           lore.classList.add('show');
           nextKey.textContent = 'GL1TCH_PHASE2'; 
+          elementKey.textContent = '__M__8___V';
           progress.style.boxShadow = '0 0 15px #0ff';
           progress.style.background = '#0ff';
           
