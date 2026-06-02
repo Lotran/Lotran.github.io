@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>SYSTEM_LOG // UNKNOWN_ROUTE</title>
+  <title>GLITCH_SYSTEM_LOG // UNKNOWN_ROUTE</title>
   <script src="analytics.js" defer></script>
   <style>
     /* ===== БАЗОВЫЕ СТИЛИ (как на index.html) ===== */
@@ -127,9 +127,8 @@
     </div>
 
     <div class="buttons">
-      <a href="index.html" class="btn secondary">← ВЕРНУТЬСЯ К ВХОДУ</a>
-      <!-- ЗАМЕНИТЕ ССЫЛКУ НА СВОЙ КАНАЛ -->
-      <a href="https://www.youtube.com/@GG_GlitchGoblin" target="_blank" class="btn">▶ СМОТРЕТЬ АРХИВ</a>
+      <a href="index.html" class="btn secondary">← ВЕРНУТЬСЯ НАЗАД</a>
+      <a href="https://www.youtube.com/playlist?list=PLzmlCbh5YN3dT8JxzMLA6nkkijaatu2HL" target="_blank" class="btn">▶ СМОТРЕТЬ АРХИВ</a>
     </div>
   </div>
 
@@ -144,20 +143,20 @@
         '<span class="prompt">> </span>Инициализация протокола ознакомления...',
         '<br>',
         '<span class="highlight">Ты нашёл то, что не предназначалось для поиска.</span>',
-        '«Глитч-файлы» — это повреждённые фрагменты данных, содержащие скрытые сигналы. Визуальный шум, QR-коды, обрывки символов... Всё это — части одной системы.',
+        '«Глитч-файлы» — это повреждённые фрагменты данных, содержащие скрытые сигналы. Визуальный шум, коды, обрывки символов... Всё это — части одной системы.',
         '<br>',
         '<span class="prompt">> </span>ПРОТОКОЛ УЧАСТИЯ:',
         '<span class="data">1.</span> Смотри видео на канале.',
         '<span class="data">2.</span> Ищи скрытые симводы и коды в помехах.',
-        '<span class="data">3.</span> Разгадай шифр.',
-        '<span class="data">4.</span> Вернись на главную и введи ключ.',
+        '<span class="data">3.</span> Найди ключ.',
+        '<span class="data">4.</span> Вернись на главную и введи код доступа.',
         '<br>',
-        '<span class="warn">⚠ ВНИМАНИЕ:</span> Коды меняются. Ошибки фиксируются.'
+        '<span class="warn">⚠ ВНИМАНИЕ:</span> Коды могут меняться. Ошибки фиксируются. Количество попыток ограничено.'
       ];
 
       let lineIndex = 0;
-      const speed = 60; // мс между строками
-      const delayBetweenLines = 650; // пауза перед следующей строкой
+      const speed = 65; // мс между строками
+      const delayBetweenLines = 750; // пауза перед следующей строкой
 
       function typeLine() {
         if (lineIndex >= logData.length) return;
