@@ -31,7 +31,10 @@
     @keyframes glitch { 0%,90%,100% { transform: translate(0); } 92% { transform: translate(-2px,1px); } 96% { transform: translate(1px,-1px); } }
     @keyframes glitch-1 { 0% { clip-path: polygon(0 20%, 100% 20%, 100% 40%, 0 40%); transform: translate(-1px,0); } 100% { clip-path: polygon(0 10%, 100% 10%, 100% 30%, 0 30%); transform: translate(1px,0); } }
     @keyframes glitch-2 { 0% { clip-path: polygon(0 60%, 100% 60%, 100% 80%, 0 80%); transform: translate(1px,0); } 100% { clip-path: polygon(0 70%, 100% 70%, 100% 90%, 0 90%); transform: translate(-1px,0); } }
-
+    @keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); box-shadow: 0 0 20px rgba(0,255,255,0.5); }
+}
     /* ===== ТЕРМИНАЛ ===== */
     .terminal {
       background: rgba(0, 20, 0, 0.3); border: 1px solid #0f0; border-radius: 4px;
@@ -65,7 +68,17 @@
     .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
 
     /* ===== ПОДСКАЗКА ===== */
-    .hint-block { margin-top: 15px; }
+    .hint-block {
+  margin-top: 15px;
+  opacity: 0; /* Скрыто */
+  transition: opacity 0.5s ease; /* Плавное появление */
+  pointer-events: none; /* Чтобы нельзя было нажать пока скрыто */
+}
+
+.hint-block.show {
+  opacity: 1;
+  pointer-events: auto;
+}
     .hint-btn { border-color: #0ff; color: #0ff; font-size: 0.9rem; margin-bottom: 8px; }
     .hint-btn:hover { background: rgba(0,255,255,0.1); box-shadow: 0 0 15px rgba(0,255,255,0.5); }
     .hint-content {
@@ -207,6 +220,13 @@
         hintBtn.textContent = isVisible ? '✕ СКРЫТЬ' : '? ПОДСКАЗКА';
       });
     });
+    // Показать кнопку подсказки через 10 секунд
+setTimeout(() => {
+  const hintBlock = document.querySelector('.hint-block');
+  if (hintBlock) {
+    hintBlock.classList.add('show');
+  }
+}, 10000); // 10000 мс = 10 секунд
   </script>
 </body>
 </html>
